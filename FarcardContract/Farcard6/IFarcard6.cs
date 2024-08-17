@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace FarcardContract.Farcard6
 {
-    public interface IFarcards6
+    public interface IFarcards6:IDisposable
     {
         void Init();
 

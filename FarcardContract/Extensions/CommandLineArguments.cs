@@ -12,35 +12,35 @@ namespace FarcardContract.Extensions
         public CommandLineArguments(string[] Args)
         {
             Parameters = new StringDictionary();
-            Regex Spliter = new Regex(@"^-{1,2}|^/|=|:",
+            Regex spliter = new Regex(@"^-{1,2}|^/|=|:",
                 RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-            Regex Remover = new Regex(@"^['""]?(.*?)['""]?$",
+            Regex remover = new Regex(@"^['""]?(.*?)['""]?$",
                 RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-            string Parameter = null;
-            string[] Parts;
+            string parameter = null;
+            string[] parts;
 
 
-            foreach (string Txt in Args)
+            foreach (string txt in Args)
             {
 
-                Parts = Spliter.Split(Txt, 3);
+                parts = spliter.Split(txt, 3);
 
-                switch (Parts.Length)
+                switch (parts.Length)
                 {
 
                     case 1:
-                        if (Parameter != null)
+                        if (parameter != null)
                         {
-                            if (!Parameters.ContainsKey(Parameter))
+                            if (!Parameters.ContainsKey(parameter))
                             {
-                                Parts[0] =
-                                    Remover.Replace(Parts[0], "$1");
+                                parts[0] =
+                                    remover.Replace(parts[0], "$1");
 
-                                Parameters.Add(Parameter, Parts[0]);
+                                Parameters.Add(parameter, parts[0]);
                             }
-                            Parameter = null;
+                            parameter = null;
                         }
 
                         break;
@@ -48,41 +48,41 @@ namespace FarcardContract.Extensions
 
                     case 2:
 
-                        if (Parameter != null)
+                        if (parameter != null)
                         {
-                            if (!Parameters.ContainsKey(Parameter))
-                                Parameters.Add(Parameter, "true");
+                            if (!Parameters.ContainsKey(parameter))
+                                Parameters.Add(parameter, "true");
                         }
-                        Parameter = Parts[1]?.ToLower();
+                        parameter = parts[1]?.ToLower();
                         break;
 
 
                     case 3:
 
-                        if (Parameter != null)
+                        if (parameter != null)
                         {
-                            if (!Parameters.ContainsKey(Parameter))
-                                Parameters.Add(Parameter, "true");
+                            if (!Parameters.ContainsKey(parameter))
+                                Parameters.Add(parameter, "true");
                         }
 
-                        Parameter = Parts[1]?.ToLower();
+                        parameter = parts[1]?.ToLower();
 
 
-                        if (!Parameters.ContainsKey(Parameter))
+                        if (!Parameters.ContainsKey(parameter))
                         {
-                            Parts[2] = Remover.Replace(Parts[2], "$1");
-                            Parameters.Add(Parameter, Parts[2]);
+                            parts[2] = remover.Replace(parts[2], "$1");
+                            Parameters.Add(parameter, parts[2]);
                         }
 
-                        Parameter = null;
+                        parameter = null;
                         break;
                 }
             }
 
-            if (Parameter != null)
+            if (parameter != null)
             {
-                if (!Parameters.ContainsKey(Parameter))
-                    Parameters.Add(Parameter, "true");
+                if (!Parameters.ContainsKey(parameter))
+                    Parameters.Add(parameter, "true");
             }
         }
 

@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
-using System.Runtime;
 using System.Security.Authentication;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using FarcardContract;
 using FarcardContract.Data;
 using FarcardContract.Data.BufferData;
@@ -21,8 +16,8 @@ using FarcardContract.HttpData.Farcard6;
 
 namespace HttpFarcard6Client
 {
-    [Export(typeof(IFarcards6))]
-    public class HttpFarcardClient : IFarcards6, IDisposable
+	[Export(typeof(IFarcards6))]
+    public class HttpFarcardClient : IFarcards6
     {
 
         private readonly HttpFarcardClientSettings _settings;

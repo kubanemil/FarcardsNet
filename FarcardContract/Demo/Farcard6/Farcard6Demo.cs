@@ -208,5 +208,10 @@ namespace FarcardContract.Demo.Farcard6
 
             return 1;
         }
-    }
+
+		public void Dispose()
+		{
+			
+		}
+	}
 }

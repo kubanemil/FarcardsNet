@@ -197,6 +197,29 @@ namespace FarcardNet {
 				Exception% ex = Win32Exception(code);
 				_logger->Error(% ex);
 			}
+
+			try
+			{
+				_logger->Info("Dispose farcards6 Begin");
+				if (!Object::ReferenceEquals(_farcard6, nullptr))
+				{
+					_logger->Info("Plugin farcards6 Dispose Begin");
+					_farcard6->Dispose();
+					_logger->Info("Plugin farcards6 Dispose Complete");
+				}
+				_logger->Info("Dispose farcards6 Complete");
+			}
+			catch (Exception^ ex)
+			{
+				_logger->Error(ex);
+			}
+			catch (...)
+			{
+				int code = GetLastError();
+				Exception% ex = Win32Exception(code);
+				_logger->Error(% ex);
+			}
+
 		}
 		if (!Object::ReferenceEquals(_farcard5, nullptr))
 		{
@@ -221,6 +244,27 @@ namespace FarcardNet {
 				Exception% ex = Win32Exception(code);
 				_logger->Error(% ex);
 			}
+			try
+			{
+				_logger->Info("Dispose farcards5 Begin");
+				if (!Object::ReferenceEquals(_farcard5, nullptr))
+				{
+					_logger->Info("Plugin farcards5 Dispose Begin");
+					_farcard5->Dispose();
+					_logger->Info("Plugin farcards5 Dispose Complete");
+				}
+				_logger->Info("Dispose farcards5 Complete");
+			}
+			catch (Exception^ ex)
+			{
+				_logger->Error(ex);
+			}
+			catch (...)
+			{
+				int code = GetLastError();
+				Exception% ex = Win32Exception(code);
+				_logger->Error(% ex);
+			}
 		}
 		if (!Object::ReferenceEquals(_farcards, nullptr))
 		{
@@ -234,6 +278,27 @@ namespace FarcardNet {
 					_logger->Info("Plugin farcardsAll Done Complete");
 				}
 				_logger->Info("Done farcardsAll Complete");
+			}
+			catch (Exception^ ex)
+			{
+				_logger->Error(ex);
+			}
+			catch (...)
+			{
+				int code = GetLastError();
+				Exception% ex = Win32Exception(code);
+				_logger->Error(% ex);
+			}
+			try
+			{
+				_logger->Info("Dispose farcardsAll Begin");
+				if (!Object::ReferenceEquals(_farcards, nullptr))
+				{
+					_logger->Info("Plugin farcardsAll Dispose Begin");
+					_farcards->Dispose();
+					_logger->Info("Plugin farcardsAll Dispose Complete");
+				}
+				_logger->Info("Dispose farcardsAll Complete");
 			}
 			catch (Exception^ ex)
 			{

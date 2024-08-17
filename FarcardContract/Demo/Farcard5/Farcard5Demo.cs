@@ -71,5 +71,10 @@ namespace FarcardContract.Demo.Farcard5
             _logger.Trace("result 0");
             return 0;
         }
-    }
+
+		public void Dispose()
+		{
+			
+		}
+	}
 }

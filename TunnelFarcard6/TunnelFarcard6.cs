@@ -16,8 +16,8 @@ using System.Text;
 namespace TunnelFarcard6
 {
     [Export(typeof(IFarcards6))]
-    public class TunnelFarcard : IFarcards6,
-        IDisposable
+    public class TunnelFarcard : IFarcards6
+       
     {
         private readonly TunnelFarcard6Settings _settings;
 

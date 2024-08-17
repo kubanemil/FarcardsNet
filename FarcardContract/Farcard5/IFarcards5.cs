@@ -6,7 +6,7 @@ using FarcardContract.Data.Farcard5;
 
 namespace FarcardContract.Farcard5
 {
-    public interface IFarcards5
+    public interface IFarcards5:IDisposable
     {
         void Init();
         void Done();
