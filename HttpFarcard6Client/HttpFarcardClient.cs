@@ -29,7 +29,9 @@ namespace HttpFarcard6Client
         HttpClient GetHttpClient()
         {
             if (_httpClient != null)
-            { return _httpClient; }
+            {
+                return _httpClient; 
+            }
             var proxySettings = _settings.ProxySettings;
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;

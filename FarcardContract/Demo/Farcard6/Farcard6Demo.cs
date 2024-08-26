@@ -211,7 +211,7 @@ namespace FarcardContract.Demo.Farcard6
 
 		public void Dispose()
 		{
-			
+			_logger.Trace("Dispose Farcards6 Demo");
 		}
 	}
 }

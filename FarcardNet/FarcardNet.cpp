@@ -204,7 +204,8 @@ namespace FarcardNet {
 				if (!Object::ReferenceEquals(_farcard6, nullptr))
 				{
 					_logger->Info("Plugin farcards6 Dispose Begin");
-					_farcard6->Dispose();
+					delete _farcard6;
+					_farcard6 = nullptr;
 					_logger->Info("Plugin farcards6 Dispose Complete");
 				}
 				_logger->Info("Dispose farcards6 Complete");
@@ -250,7 +251,8 @@ namespace FarcardNet {
 				if (!Object::ReferenceEquals(_farcard5, nullptr))
 				{
 					_logger->Info("Plugin farcards5 Dispose Begin");
-					_farcard5->Dispose();
+					delete _farcard5;
+					_farcard5 = nullptr;
 					_logger->Info("Plugin farcards5 Dispose Complete");
 				}
 				_logger->Info("Dispose farcards5 Complete");
@@ -295,7 +297,8 @@ namespace FarcardNet {
 				if (!Object::ReferenceEquals(_farcards, nullptr))
 				{
 					_logger->Info("Plugin farcardsAll Dispose Begin");
-					_farcards->Dispose();
+					delete _farcards;
+					_farcards = nullptr;
 					_logger->Info("Plugin farcardsAll Dispose Complete");
 				}
 				_logger->Info("Dispose farcardsAll Complete");
@@ -343,6 +346,10 @@ namespace FarcardNet {
 				_logger->Info("Plugin farcardAll GetCardInfoEx Invoke");
 				res = _farcards->GetCardInfoEx(card, restaurant, unitNo, cardInfo, inpBuf, inpKind, outBuf, outKind);
 				_logger->Info("Plugin farcardAll GetCardInfoEx Invoke Complete result: " + res);
+			}
+			else 
+			{
+				_logger->Error("No Plugin farcard GetCardInfoEx Invoke");
 			}
 
 			_logger->Info("CardInfoEx After Invoke: " + cardInfo->ToStringLog());
@@ -395,6 +402,10 @@ namespace FarcardNet {
 				_logger->Info("Plugin farcardAll GetCardInfoL Invoke");
 				res = _farcards->GetCardInfoL(card, restaurant, unitNo, cardInfo);
 				_logger->Info("Plugin farcardAll GetCardInfoL Invoke Complete result: " + res);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard GetCardInfoL Invoke");
 			}
 
 			_logger->Info("CardInfoL After Invoke: " + cardInfo->ToStringLog());
@@ -468,6 +479,10 @@ namespace FarcardNet {
 				res = _farcards->TransactionsEx(% listTr, inpBuf, inpKind, outBuf, outKind);
 				_logger->Info("Plugin farcardAll TransactionEx Complete Result: " + res);
 			}
+			else
+			{
+				_logger->Error("No Plugin farcard TransactionEx Invoke");
+			}
 
 			if (!Object::ReferenceEquals(outBuf, nullptr) && outBuf->Length > 0)
 			{
@@ -476,6 +491,64 @@ namespace FarcardNet {
 
 			outLen = !Object::ReferenceEquals(outBuf, nullptr) ? outBuf->Length : 0;
 			_logger->Info("TransactionEx Complete Result: " + res);
+
+		}
+		catch (Exception^ ex)
+		{
+			_logger->Error(ex);
+		}
+		catch (...)
+		{
+			int code = GetLastError();
+			Exception% ex = Win32Exception(code);
+			_logger->Error(% ex);
+		}
+		return res;
+	}
+
+	int TransactionPacketL(UInt32 count, IntPtr pList)
+	{
+		int res = 1;
+		try
+		{
+			List<TransactionPacketInfoL^>% listTr = List<TransactionPacketInfoL^>();
+			_logger->Info("Copy native: " + pList.ToInt32() + "TransactionPacketLList to object, count: " + count);
+			for (UInt32 i = 0; i < count; i++)
+			{
+				int size = IntPtr::Size;
+				IntPtr address = safe_cast<IntPtr>(
+					Marshal::ReadInt32(pList, i * IntPtr::Size));
+
+				_logger->Info("Native address: " + address.ToInt32() + " of item transaction:" + i);
+
+				TransactionPacketInfoL^ info =
+					safe_cast<TransactionPacketInfoL^>(
+						Marshal::PtrToStructure(address
+							,
+							TransactionPacketInfoL::typeid)
+						);
+
+				listTr.Add(info);
+				_logger->Info("TransactionPacketL Item: " + i + " " + info->ToStringLog());
+			}
+			if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				_logger->Info("Plugin farcard5 TransactionPacketL begin");
+				res = _farcard5->TransactionPacketL(% listTr);
+				_logger->Info("Plugin farcard5 TransactionPacketL Complete result:" + res);
+			}
+			else if (!Object::ReferenceEquals(_farcards, nullptr))
+			{
+				_logger->Info("Plugin farcardAll TransactionPacketL begin");
+				res = safe_cast<IFarcards5^>(_farcards)->TransactionPacketL(% listTr);
+				_logger->Info("Plugin farcardAll TransactionPacketL Complete result:" + res);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard TransactionPacketL Invoke");
+			}
+
+			_logger->Info("TransactionPacket Complete result:" + res);
 
 		}
 		catch (Exception^ ex)
@@ -520,7 +593,10 @@ namespace FarcardNet {
 				_logger->Info("Plugin FarcardAll TransactionEx Begin");
 				res = _farcards->TransactionL(account, trInfo);
 				_logger->Info("Plugin FarcardAll TransactionEx Complete Result: " + res);
-
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard TransactionEx Invoke");
 			}
 
 			_logger->Info("TransactionEx Complete Result: " + res);
@@ -562,6 +638,10 @@ namespace FarcardNet {
 				res = _farcards->GetCardImageEx(card, info);
 				_logger->Info("Plugin farcardAll GetCardImageEx Complete Result: " + res);
 			}
+			else
+			{
+				_logger->Error("No Plugin farcard GetCardImageEx Invoke");
+			}
 
 			_logger->Info("Info after invoke" + info->ToStringLog());
 
@@ -572,6 +652,56 @@ namespace FarcardNet {
 			}
 
 			_logger->Info("GetCardImageEx Complete");
+		}
+		catch (Exception^ ex)
+		{
+			_logger->Error(ex);
+		}
+		catch (...)
+		{
+			int code = GetLastError();
+			Exception% ex = Win32Exception(code);
+			_logger->Error(% ex);
+		}
+		return res;
+	}
+
+	int GetCardImageL(Int64 card, IntPtr pInfo)
+	{
+		int res = 1;
+		try
+		{
+			_logger->Info("GetCardImageL card:" + card);
+
+			TextInfo^ info = gcnew TextInfo();
+			_logger->Info("Info before invoke" + info->ToStringLog());
+
+			if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				_logger->Info("Plugin farcard6 GetCardImageL Before Card: " + card);
+				res = _farcard5->GetCardImageL(card, info);
+				_logger->Info("Plugin farcard6 GetCardImageL Complete Result: " + res);
+			}
+			else if (!Object::ReferenceEquals(_farcards, nullptr))
+			{
+				_logger->Info("Plugin farcardAll GetCardImageL Before Card: " + card);
+				res = _farcards->GetCardImageL(card, info);
+				_logger->Info("Plugin farcardAll GetCardImageL Complete Result: " + res);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard GetCardImageL Invoke");
+			}
+
+			_logger->Info("Info after invoke" + info->ToStringLog());
+
+			if (res == 0)
+			{
+				_logger->Info("Copy Info to native address: " + pInfo.ToInt32());
+				Marshal::StructureToPtr(info, pInfo, false);
+			}
+
+			_logger->Info("GetCardImageL Complete");
 		}
 		catch (Exception^ ex)
 		{
@@ -597,9 +727,17 @@ namespace FarcardNet {
 			{
 				res = _farcard6->FindEmail(email, info);
 			}
+			else if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				res = _farcard5->FindEmail(email, info);
+			}
 			else if (!Object::ReferenceEquals(_farcards, nullptr))
 			{
-				res = _farcards->FindEmail(email, info);
+				res = safe_cast<IFarcards5^>(_farcards)->FindEmail(email, info);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard FindEmail Invoke");
 			}
 
 			if (res == 0)
@@ -633,9 +771,17 @@ namespace FarcardNet {
 			{
 				_farcard6->FindCardsL(findText, cbFind, backPtr);
 			}
+			else if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				_farcard5->FindCardsL(findText, cbFind, backPtr);
+			}
 			else if (!Object::ReferenceEquals(_farcards, nullptr))
 			{
-				_farcards->FindCardsL(findText, cbFind, backPtr);
+				safe_cast<IFarcards5^>(_farcards)->FindCardsL(findText, cbFind, backPtr);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard FindCardsL Invoke");
 			}
 		}
 		catch (Exception^ ex)
@@ -667,6 +813,10 @@ namespace FarcardNet {
 			else if (!Object::ReferenceEquals(_farcards, nullptr))
 			{
 				_farcards->FindAccountsByKind(kind, findText, cbFind, backPtr);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard FindAccountsByKind Invoke");
 			}
 		}
 		catch (Exception^ ex)
@@ -700,11 +850,21 @@ namespace FarcardNet {
 				_farcard6->AnyInfo(inpBuf, outBuf);
 				_logger->Info("Plugin farcard6 AnyInfo Complete");
 			}
+			else if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				_logger->Info("Plugin farcard5 AnyInfo begin");
+				_farcard5->AnyInfo(inpBuf, outBuf);
+				_logger->Info("Plugin farcard5 AnyInfo Complete");
+			}
 			else if (!Object::ReferenceEquals(_farcards, nullptr))
 			{
 				_logger->Info("Plugin farcardAll AnyInfo begin");
-				_farcards->AnyInfo(inpBuf, outBuf);
+				safe_cast<IFarcards5^>(_farcards)->AnyInfo(inpBuf, outBuf);
 				_logger->Info("Plugin farcardAll AnyInfo Complete");
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard AnyInfo Invoke");
 			}
 
 			if (!Object::ReferenceEquals(outBuf, nullptr) && outBuf->Length > 0)
@@ -742,11 +902,21 @@ namespace FarcardNet {
 				res = _farcard6->GetDiscLevelInfoL(account, info);
 				_logger->Info("Plugin farcard6 GetDiscLevelInfo Complete result:" + res);
 			}
+			else if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				_logger->Info("Plugin farcard5 GetDiscLevelInfo begin");
+				res = _farcard5->GetDiscLevelInfoL(account, info);
+				_logger->Info("Plugin farcard5 GetDiscLevelInfo Complete result:" + res);
+			}
 			else if (!Object::ReferenceEquals(_farcards, nullptr))
 			{
 				_logger->Info("Plugin farcardAll GetDiscLevelInfo begin");
-				res = _farcards->GetDiscLevelInfoL(account, info);
+				res = safe_cast<IFarcards5^>(_farcards)->GetDiscLevelInfoL(account, info);
 				_logger->Info("Plugin farcardAll GetDiscLevelInfo Complete result:" + res);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard GetDiscLevelInfo Invoke");
 			}
 
 			_logger->Info("DiscLevelInfo After Invoke : " + info->ToStringLog());
@@ -756,7 +926,6 @@ namespace FarcardNet {
 
 				Marshal::StructureToPtr(info, pInfo, false);
 			}
-
 
 			_logger->Info("GetDiscLevelInfo Complete result:" + res);
 		}
@@ -771,5 +940,139 @@ namespace FarcardNet {
 			_logger->Error(% ex);
 		}
 		return res;
+	}
+
+	int GetCardMessageL(UInt32 account, IntPtr pInfo)
+	{
+		int res = 1;
+		try
+		{
+			TextInfoEx^ info = gcnew TextInfoEx();
+			if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				_logger->Info("Plugin farcard5 GetCardMessageL begin");
+				res = _farcard5->GetCardMessageL(account, info);
+				_logger->Info("Plugin farcard5 GetCardMessageL Complete result:" + res);
+			}
+			else if (!Object::ReferenceEquals(_farcards, nullptr))
+			{
+				_logger->Info("Plugin farcardAll GetCardMessageL begin");
+				res = safe_cast<IFarcards5^>(_farcards)->GetCardMessageL(account, info);
+				_logger->Info("Plugin farcardAll GetCardMessageL Complete result:" + res);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard GetCardMessageL Invoke");
+			}
+
+			if (res == 0)
+			{
+
+				Marshal::StructureToPtr(info, pInfo, false);
+			}
+
+			_logger->Info("GetCardMessageL Complete result:" + res);
+
+		}
+		catch (Exception^ ex)
+		{
+			_logger->Error(ex);
+		}
+		catch (...)
+		{
+			int code = GetLastError();
+			Exception% ex = Win32Exception(code);
+			_logger->Error(% ex);
+		}
+		return res;
+	}
+
+	int GetCardMessage2L(UInt32 account, IntPtr pInfo)
+	{
+		int res = 1;
+		try
+		{
+			TextInfoEx^ info = gcnew TextInfoEx();
+			if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				_logger->Info("Plugin farcard5 GetCardMessage2L begin");
+				res = _farcard5->GetCardMessage2L(account, info);
+				_logger->Info("Plugin farcard5 GetCardMessage2L Complete result:" + res);
+			}
+			else if (!Object::ReferenceEquals(_farcards, nullptr))
+			{
+				_logger->Info("Plugin farcardAll GetCardMessage2L begin");
+				res = safe_cast<IFarcards5^>(_farcards)->GetCardMessage2L(account, info);
+				_logger->Info("Plugin farcardAll GetCardMessage2L Complete result:" + res);
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard GetCardMessage2L Invoke");
+			}
+
+			if (res == 0)
+			{
+
+				Marshal::StructureToPtr(info, pInfo, false);
+			}
+
+			_logger->Info("GetCardMessage2L Complete result:" + res);
+
+		}
+		catch (Exception^ ex)
+		{
+			_logger->Error(ex);
+		}
+		catch (...)
+		{
+			int code = GetLastError();
+			Exception% ex = Win32Exception(code);
+			_logger->Error(% ex);
+		}
+		return res;
+	}
+
+
+	void CheckInfoL(UInt32 account, IntPtr pInpBuf, UInt32 inpLen)
+	{
+		try
+		{
+			array<Byte>^ inpBuf = gcnew  array<Byte>(inpLen);
+			Marshal::Copy(pInpBuf, inpBuf, 0, inpLen);
+			if (inpBuf->Length > 0)
+			{
+				_logger->Info("InpBuf: " + Text::Encoding::UTF8->GetString(inpBuf));
+			}
+
+			if (!Object::ReferenceEquals(_farcard5, nullptr))
+			{
+				_logger->Info("Plugin farcard5 CheckInfoL begin");
+				_farcard5->CheckInfoL(account, inpBuf);
+				_logger->Info("Plugin farcard5 CheckInfoL Complete");
+			}
+			else if (!Object::ReferenceEquals(_farcards, nullptr))
+			{
+				_logger->Info("Plugin farcardAll CheckInfoL begin");
+				_farcards->CheckInfoL(account, inpBuf);
+				_logger->Info("Plugin farcardAll CheckInfoL Complete");
+			}
+			else
+			{
+				_logger->Error("No Plugin farcard CheckInfoL Invoke");
+			}
+
+			_logger->Info("CheckInfoL Complete");
+
+		}
+		catch (Exception^ ex)
+		{
+			_logger->Error(ex);
+		}
+		catch (...)
+		{
+			int code = GetLastError();
+			Exception% ex = Win32Exception(code);
+			_logger->Error(% ex);
+		}
 	}
 }

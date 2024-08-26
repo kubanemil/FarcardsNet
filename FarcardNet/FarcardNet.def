@@ -8,9 +8,14 @@ GetCardInfoEx
 GetCardInfoL
 TransactionsEx
 TransactionL
+TransactionPacketL
+CheckInfoL
+GetCardImageL
 GetCardImageEx
 FindEmail
 FindCardsL
 FindAccountsByKind
 AnyInfo
 GetDiscLevelInfoL
+GetCardMessageL
+GetCardMessage2L

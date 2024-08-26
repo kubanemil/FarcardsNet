@@ -10,7 +10,13 @@ namespace FarcardContract.Data
 
         public static long GetDemoCard => 1;
 
-        public static CardInfoEx Demo(this CardInfoEx cardInfoEx)
+        public static string GetDemoDopInfo = "Тестовая информация";
+
+		public static string GetDemoScrMessage = "Тестовая информация для экрана";
+
+		public static string GetDemoPrnMessage = "Тестовая информация для печати";
+
+		public static CardInfoEx Demo(this CardInfoEx cardInfoEx)
         {
             cardInfoEx.Holy = YesNo.No;
             cardInfoEx.Grab = YesNo.No;
@@ -33,9 +39,9 @@ namespace FarcardContract.Data
             cardInfoEx.Discount = 99;
             cardInfoEx.PersonID = 1234;
             cardInfoEx.Unpay = 0;
-            cardInfoEx.ScrMessage = "Тестовая информация для экрана";
-            cardInfoEx.DopInfo = "Тестовая информация";
-            cardInfoEx.PrnMessage = "Тестовая информация для печати";
+            cardInfoEx.ScrMessage = GetDemoScrMessage;
+            cardInfoEx.DopInfo = GetDemoDopInfo;
+            cardInfoEx.PrnMessage = GetDemoPrnMessage;
 
             return cardInfoEx;
         }
@@ -61,7 +67,7 @@ namespace FarcardContract.Data
             cardInfoL.Bonus = 5;
             cardInfoL.Discount = 99;
             cardInfoL.Unpay = 0;
-            cardInfoL.DopInfo = "Тестовая информация";
+            cardInfoL.DopInfo = GetDemoDopInfo;
             cardInfoL.Manager = YesNo.No;
 
             return cardInfoL;
