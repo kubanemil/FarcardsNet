@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using FarcardContract.Data.BufferData;
 using FarcardContract.Farcard6;
 using NLog.LayoutRenderers;
+using FarcardContract.Extensions;
 
 
 namespace Farcards
@@ -27,6 +28,8 @@ namespace Farcards
         private void MainForm_Load(object sender, EventArgs e)
         {
             _settings = FarcardsSettings.GetSettings();
+            var tem= Farcards.GetSettings();
+      
             FileInfo finfo = null;
             if (!string.IsNullOrWhiteSpace(_settings.ExtDll))
                 finfo = new FileInfo(_settings.ExtDll);
@@ -39,6 +42,7 @@ namespace Farcards
             if (_farcard != null)
             {
                 _farcard.Done();
+                _farcard.Dispose();
                 _farcard = null;
             }
         }

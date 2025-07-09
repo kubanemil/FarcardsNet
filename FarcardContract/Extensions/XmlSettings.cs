@@ -10,10 +10,10 @@ namespace FarcardContract
         Logger<XmlSettings<T>> Log = new Logger<XmlSettings<T>>(1);
 
 
-        protected XmlSettings(bool deserialize)
+        protected XmlSettings(bool deserialize = false,string path = null)
         {
             if (deserialize)
-                Deserialize();
+                Deserialize(path);
         }
 
         string _path;
@@ -81,10 +81,13 @@ namespace FarcardContract
             Log.Debug("настройки записаны");
         }
 
-        public void Deserialize()
+        public void Deserialize(string path = null)
         {
             try
             {
+                if(!string.IsNullOrWhiteSpace(path))
+                   _path = path;
+
                 if (string.IsNullOrWhiteSpace(_path))
                     _path = GetSettingsPath<T>();
                 ObjectSettings = Activator.CreateInstance<T>();

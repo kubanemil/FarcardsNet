@@ -27,10 +27,10 @@ namespace FarcardNet {
 		FarcardsAll
 	};
 
-	gcroot<Logger<FarcardNet^>^> _logger;
-	gcroot<IFarcards6^> _farcard6;
-	gcroot<IFarcards5^> _farcard5;
-	gcroot<IFarcards^> _farcards;
+	gcroot<Logger<FarcardNet^>^> _logger = nullptr;
+	gcroot<IFarcards6^> _farcard6 = nullptr;
+	gcroot<IFarcards5^> _farcard5 = nullptr;
+	gcroot<IFarcards^> _farcards = nullptr;
 
 	FarcardType InitFactories(FarcardNetSettings^ settings)
 	{
@@ -52,8 +52,8 @@ namespace FarcardNet {
 			_logger->Info("Load Plugin Farcars5");
 			IFarcards5^ farcards5 = Farcards5Factory().GetProcessor(file_info);
 			_logger->Info("Load Plugin Farcards5 Complete");
-			_farcard5 = gcroot<IFarcards5^>();
-			_farcard5 = farcards5;
+			_farcard5 = gcroot<IFarcards5^>(_farcard5);
+			//_farcard5 = farcards5;
 			return Farcards5;
 		}
 		catch (CompositionException^ ex)
@@ -66,8 +66,8 @@ namespace FarcardNet {
 			_logger->Info("Load Plugin Farcars6");
 			IFarcards6^ farcards6 = Farcards6Factory().GetProcessor(file_info);
 			_logger->Info("Load Plugin Farcards6 Complete");
-			_farcard6 = gcroot<IFarcards6^>();
-			_farcard6 = farcards6;
+			_farcard6 = gcroot<IFarcards6^>(farcards6);
+			//_farcard6 = farcards6;
 			return Farcards6;
 		}
 		catch (CompositionException^ ex)
@@ -80,8 +80,8 @@ namespace FarcardNet {
 			_logger->Info("Load Plugin FarcarsAll");
 			IFarcards^ farcards = FarcardsAllFactory().GetProcessor(file_info);
 			_logger->Info("Load Plugin FarcardsAll Complete");
-			_farcards = gcroot<IFarcards^>();
-			_farcards = farcards;
+			_farcards = gcroot<IFarcards^>(farcards);
+		//	_farcards = farcards;
 			return FarcardsAll;
 		}
 		catch (CompositionException^ ex)
@@ -97,8 +97,8 @@ namespace FarcardNet {
 	{
 		try {
 			FarcardNetSettings^ settings = FarcardNetSettings::GetSettings(nullptr);
-			_logger = gcroot<Logger<FarcardNet^>^>();
-			_logger = gcnew  Logger<FarcardNet^>(settings->LogLevel, false);
+			_logger = gcroot<Logger<FarcardNet^>^>(gcnew  Logger<FarcardNet^>(settings->LogLevel, false));
+			
 
 			_logger->Info("Load Plugin");
 
@@ -149,7 +149,7 @@ namespace FarcardNet {
 			{
 				throw gcnew Exception("Plugin not initialize");
 			}
-			_logger->Info("Plugin Loaded Complete");
+			_logger->Info("Plugin type: "+ static_cast<int>(initType) + " Loaded Complete");
 		}
 		catch (Exception^ ex)
 		{

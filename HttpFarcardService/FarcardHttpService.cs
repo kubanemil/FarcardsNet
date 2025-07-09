@@ -1,4 +1,6 @@
 ﻿using FarcardContract;
+using FarcardContract.Data;
+using FarcardContract.Data.Farcard6;
 using FarcardContract.Farcard6;
 using FarcardContract.HttpData.Farcard6;
 using System;
@@ -6,11 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Xml;
-using FarcardContract.Data;
-using FarcardContract.Data.Farcard6;
-using Exception = System.Exception;
-using System.Linq.Expressions;
+
 
 
 namespace HttpFarcardService
