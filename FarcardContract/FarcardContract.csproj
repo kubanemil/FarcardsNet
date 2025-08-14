@@ -10,11 +10,14 @@
 	  <Company>AndryPol</Company>
 	  <Description>Core library by plugins</Description>
  
+     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+ 
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NLog" Version="5.1.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
