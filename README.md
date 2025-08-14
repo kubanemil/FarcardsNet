@@ -138,3 +138,7 @@ Name - Имя клиента
 ## HttpFarcard6Client
 Плагин повторяющий работу библотеки FarcardHttp, был написан в качестве тестового плагина для написания и отладки HttpFarcardService
 Передает в теле запроса объекты как в Xml виде так и в json 
+
+
+## More Info
+https://int.carbis.ru/docs/Carbis_rkeeper_external_loyalty.pdf
